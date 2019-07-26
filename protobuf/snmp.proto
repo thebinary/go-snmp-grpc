@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package protobuf;
+
+service Command {
+  rpc Get(OidList) returns (SnmpPacket) {};
+  rpc StreamWalk(Oid) returns (stream SnmpPDU) {};
+}
+
+enum Asn1BER {
+    option allow_alias = true;
+    EndOfContents = 0x0;
+    UnknownType = 0x0;
+    Boolean = 0x1;
+    Integer = 0x02;
+    BitString = 0x03;
+    OctetString = 0x04;
+    Null = 0x05;
+    ObjectIdentifier = 0x06;
+    ObjectDescription = 0x07;
+    IPAddress = 0x40;
+    Counter32 = 0x41;
+    Gauge32 = 0x42;
+    TimeTicks = 0x43;
+    Opaque = 0x44;
+    NsapAddress = 0x45;
+    Counter64 = 0x46;
+    Uinteger32 = 0x47;
+    OpaqueFloat = 0x78;
+    OpaqueDouble = 0x79;
+    NoSuchObject = 0x80;
+    NoSuchInstance = 0x81;
+    EndOfMibView = 0x82;
+}
+
+message SnmpPDU {
+  string Name = 1;
+  Asn1BER Type = 2;
+  oneof Value {
+    int32 I32 = 3;
+    int64 I64 = 4;
+    uint32 UI32 = 5;
+    uint64 UI64 = 6;
+    string Str = 7;
+  }
+}
+
+message Oid {
+  string oid = 1;
+}
+
+message OidList {
+  repeated string oids = 1;
+}
+
+message SnmpPacket {
+  uint32 Error = 1;
+  repeated SnmpPDU Variable = 2;
+}
