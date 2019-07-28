@@ -87,6 +87,24 @@ func ToPbSnmpPDU(pdu gosnmp.SnmpPDU) (pbSnmpPdu *pb.SnmpPDU) {
 	return pbSnmpPdu
 }
 
+func ToGoSnmpPDU(pbSnmpPdu *pb.SnmpPDU) (pdu gosnmp.SnmpPDU) {
+	pdu = gosnmp.SnmpPDU{
+		Name: pbSnmpPdu.Name,
+		Type: gosnmp.Asn1BER(pbSnmpPdu.Type),
+	}
+
+	switch pbSnmpPdu.Type {
+	case pb.Asn1BER_OctetString:
+		pdu.Value = pbSnmpPdu.GetStr()
+	case pb.Asn1BER_TimeTicks:
+		pdu.Value = pbSnmpPdu.GetUI64()
+	case pb.Asn1BER_Integer:
+		pdu.Value = pbSnmpPdu.GetI32()
+	}
+
+	return pdu
+}
+
 func (s *CommandServer) Get(ctx context.Context, oids *pb.OidList) (snmpPacket *pb.SnmpPacket, err error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	snmp, err := s.snmpConnectionFromMetadata(md)
@@ -104,6 +122,41 @@ func (s *CommandServer) Get(ctx context.Context, oids *pb.OidList) (snmpPacket *
 	packet, err := snmp.Get(oids.Oids)
 	if err != nil {
 		return nil, fmt.Errorf("ERR_SNMP_GET: %v", err)
+	}
+
+	vars := packet.Variables
+	pbVars := make([]*pb.SnmpPDU, len(vars))
+	for i, v := range vars {
+		pbVars[i] = ToPbSnmpPDU(v)
+	}
+
+	return &pb.SnmpPacket{
+		Error:    uint32(packet.ErrorIndex),
+		Variable: pbVars,
+	}, nil
+}
+
+func (s *CommandServer) Set(ctx context.Context, pdus *pb.SnmpPDUs) (snmpPacket *pb.SnmpPacket, err error) {
+	md, _ := metadata.FromIncomingContext(ctx)
+	snmp, err := s.snmpConnectionFromMetadata(md)
+	if err != nil {
+		log.Printf("[ERR] %v", err)
+		return nil, err
+	}
+
+	err = snmp.Connect()
+	if err != nil {
+		return nil, fmt.Errorf("ERR_SNMP_CONN: %v", err)
+	}
+	defer snmp.Conn.Close()
+
+	setPdus := make([]gosnmp.SnmpPDU, len(pdus.Pdus))
+	for i, pdu := range pdus.Pdus {
+		setPdus[i] = ToGoSnmpPDU(pdu)
+	}
+	packet, err := snmp.Set(setPdus)
+	if err != nil {
+		return nil, fmt.Errorf("ERR_SNMP_SET: %v", err)
 	}
 
 	vars := packet.Variables
