@@ -69,6 +69,13 @@ message SnmpPDU {
   }
 }
 
+/*
+ * Represents multiple SNMP PDU
+ */
+message SnmpPDUs {
+  repeated SnmpPDU pdus = 1;
+}
+
 message SnmpPacket {
   uint32 Error = 1;
   repeated SnmpPDU Variable = 2;
@@ -81,6 +88,9 @@ message SnmpPacket {
 service Command {
   //SNMP Get given the list of OIDs
   rpc Get(OidList) returns (SnmpPacket) {};
+
+  //SNMP Set
+  rpc Set(SnmpPDUs) returns (SnmpPacket) {};
 
   //Stream each SNMP PDU while running SNMP WALK from the given OID.
   rpc StreamWalk(Oid) returns (stream SnmpPDU) {};

@@ -7,6 +7,7 @@
     - [Oid](#protobuf.Oid)
     - [OidList](#protobuf.OidList)
     - [SnmpPDU](#protobuf.SnmpPDU)
+    - [SnmpPDUs](#protobuf.SnmpPDUs)
     - [SnmpPacket](#protobuf.SnmpPacket)
   
     - [Asn1BER](#protobuf.Asn1BER)
@@ -83,6 +84,21 @@ determined by the type of value it stores.
 
 
 
+<a name="protobuf.SnmpPDUs"></a>
+
+### SnmpPDUs
+Represents multiple SNMP PDU
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| pdus | [SnmpPDU](#protobuf.SnmpPDU) | repeated |  |
+
+
+
+
+
+
 <a name="protobuf.SnmpPacket"></a>
 
 ### SnmpPacket
@@ -145,6 +161,7 @@ The SNMP command service.
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
 | Get | [OidList](#protobuf.OidList) | [SnmpPacket](#protobuf.SnmpPacket) | SNMP Get given the list of OIDs |
+| Set | [SnmpPDUs](#protobuf.SnmpPDUs) | [SnmpPacket](#protobuf.SnmpPacket) | SNMP Set |
 | StreamWalk | [Oid](#protobuf.Oid) | [SnmpPDU](#protobuf.SnmpPDU) stream | Stream each SNMP PDU while running SNMP WALK from the given OID. |
 
  
