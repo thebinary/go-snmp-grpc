@@ -1,6 +1,7 @@
 package main
 
-//go:generate protoc -I ../protobuf --go_out=plugins=grpc:../protobuf ../protobuf/snmp.proto
+//go:generate protoc -I ./protobuf --go_out=plugins=grpc:./protobuf ./protobuf/snmp.proto
+//go:generate protoc --doc_out=./protobuf --doc_opt=markdown,./protobuf/README.md ./protobuf/snmp.proto
 import (
 	"context"
 	"fmt"

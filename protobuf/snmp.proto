@@ -1,12 +1,15 @@
+/*
+ * SNMP Protobuf.
+ *
+ * A protobuf interface to SNMP functions.
+ */
 syntax = "proto3";
 
 package protobuf;
 
-service Command {
-  rpc Get(OidList) returns (SnmpPacket) {};
-  rpc StreamWalk(Oid) returns (stream SnmpPDU) {};
-}
-
+/*
+ * Asn1Ber Enum Type definitions
+ */
 enum Asn1BER {
     option allow_alias = true;
     EndOfContents = 0x0;
@@ -33,27 +36,52 @@ enum Asn1BER {
     EndOfMibView = 0x82;
 }
 
-message SnmpPDU {
-  string Name = 1;
-  Asn1BER Type = 2;
-  oneof Value {
-    int32 I32 = 3;
-    int64 I64 = 4;
-    uint32 UI32 = 5;
-    uint64 UI64 = 6;
-    string Str = 7;
-  }
-}
-
+/*
+ * Represents SNMP OID.
+ */
 message Oid {
-  string oid = 1;
+  string oid = 1; // SNMP OID
 }
 
+/*
+ * Represents list of SNMP Oids
+ */
 message OidList {
-  repeated string oids = 1;
+  repeated string oids = 1; // List of SNMP OIDs
+}
+
+/*
+ * Represents a single SNMP PDU
+ * consisting of oid, type and a value.
+ *
+ * The value is in any one of the following fields,
+ * determined by the type of value it stores.
+ */
+message SnmpPDU {
+  string Name = 1; // OID
+  Asn1BER Type = 2; // PDU Type (Asn1BER encoding type)
+  oneof Value {
+    int32 I32 = 3; // Stores 32-bit integer
+    int64 I64 = 4; // Stores 64-bit signed integer
+    uint32 UI32 = 5; // Stores 32-bit unsigned integer
+    uint64 UI64 = 6; // Stores 64-bit unsigned integer
+    string Str = 7; // Stores string
+  }
 }
 
 message SnmpPacket {
   uint32 Error = 1;
   repeated SnmpPDU Variable = 2;
+}
+
+/*
+ * The SNMP command service.
+ *
+ */
+service Command {
+  //SNMP Get given the list of OIDs
+  rpc Get(OidList) returns (SnmpPacket) {};
+
+  //Stream each SNMP PDU while running SNMP WALK from the given OID.
+  rpc StreamWalk(Oid) returns (stream SnmpPDU) {};
 }
