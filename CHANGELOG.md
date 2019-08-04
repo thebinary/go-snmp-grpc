@@ -1,3 +1,6 @@
+## v0.0.3
+* add support for one shot Walk
+
 ## v0.0.2
 * add support for SNMP Set
 
