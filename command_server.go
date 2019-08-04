@@ -171,6 +171,36 @@ func (s *CommandServer) Set(ctx context.Context, pdus *pb.SnmpPDUs) (snmpPacket 
 	}, nil
 }
 
+func (s *CommandServer) Walk(ctx context.Context, oid *pb.Oid) (snmpPacket *pb.SnmpPDUs, err error) {
+	md, _ := metadata.FromIncomingContext(ctx)
+	snmp, err := s.snmpConnectionFromMetadata(md)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	err = snmp.Connect()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	defer snmp.Conn.Close()
+
+	vars, err := snmp.WalkAll(oid.Oid)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	pbVars := make([]*pb.SnmpPDU, len(vars))
+	for i, v := range vars {
+		pbVars[i] = ToPbSnmpPDU(v)
+	}
+	return &pb.SnmpPDUs{
+		Pdus: pbVars,
+	}, nil
+}
+
 func (s *CommandServer) StreamWalk(oid *pb.Oid, srv pb.Command_StreamWalkServer) error {
 	ctx := srv.Context()
 	md, _ := metadata.FromIncomingContext(ctx)

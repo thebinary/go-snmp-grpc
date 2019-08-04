@@ -162,6 +162,7 @@ The SNMP command service.
 | ----------- | ------------ | ------------- | ------------|
 | Get | [OidList](#protobuf.OidList) | [SnmpPacket](#protobuf.SnmpPacket) | SNMP Get given the list of OIDs |
 | Set | [SnmpPDUs](#protobuf.SnmpPDUs) | [SnmpPacket](#protobuf.SnmpPacket) | SNMP Set |
+| Walk | [Oid](#protobuf.Oid) | [SnmpPDUs](#protobuf.SnmpPDUs) | SNMP Walk and return all variables in one shot |
 | StreamWalk | [Oid](#protobuf.Oid) | [SnmpPDU](#protobuf.SnmpPDU) stream | Stream each SNMP PDU while running SNMP WALK from the given OID. |
 
  

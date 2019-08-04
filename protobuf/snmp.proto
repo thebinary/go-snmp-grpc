@@ -92,6 +92,9 @@ service Command {
   //SNMP Set
   rpc Set(SnmpPDUs) returns (SnmpPacket) {};
 
+  //SNMP Walk and return all variables in one shot
+  rpc Walk(Oid) returns (SnmpPDUs) {};
+
   //Stream each SNMP PDU while running SNMP WALK from the given OID.
   rpc StreamWalk(Oid) returns (stream SnmpPDU) {};
 }
