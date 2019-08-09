@@ -60,6 +60,7 @@ func (s *CommandServer) snmpConnectionFromMetadata(md metadata.MD) (snmp *gosnmp
 		Timeout:   gosnmp.Default.Timeout,
 		Retries:   gosnmp.Default.Retries,
 		MaxOids:   gosnmp.Default.MaxOids,
+		Logger:    s.SNMPLogger,
 	}, nil
 }
 

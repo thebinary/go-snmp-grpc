@@ -1,3 +1,6 @@
+## v0.0.4
+* add optional debug SNMP logging
+
 ## v0.0.3
 * add support for one shot Walk
 

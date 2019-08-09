@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/soniah/gosnmp"
 	flag "github.com/spf13/pflag"
@@ -13,12 +14,15 @@ const (
 	defaultAddr             = ":8161"
 	varDefaultSnmpCommunity = "default_comm"
 	varDefaultSnmpVersion   = "default_version"
+	varLogSnmp              = "log_snmp"
+	varLogSnmpPrefix        = "log_snmp_prefix"
 )
 
 type CommandServer struct {
 	ListenAddr       string
 	DefaultVersion   gosnmp.SnmpVersion
 	DefaultCommunity string
+	SNMPLogger       gosnmp.Logger
 }
 
 // C : Global Application Config
@@ -34,7 +38,7 @@ func init() {
 	// bind other viper env vars
 	viper.SetEnvPrefix("GSNMP")
 	envs := []string{
-		varDefaultSnmpCommunity, varDefaultSnmpVersion,
+		varDefaultSnmpCommunity, varDefaultSnmpVersion, varLogSnmp, varLogSnmpPrefix,
 	}
 	for _, envName := range envs {
 		err := viper.BindEnv(envName)
@@ -47,6 +51,8 @@ func init() {
 	flag.String("addr", defaultAddr, "Listening Address")
 	flag.String(varDefaultSnmpCommunity, gosnmp.Default.Community, "Default SNMP Community")
 	flag.String(varDefaultSnmpVersion, fmt.Sprint(gosnmp.Default.Version), "Default SNMP Version")
+	flag.Bool(varLogSnmp, false, "SNMP Debug logging")
+	flag.String(varLogSnmpPrefix, "[SNMP]\t", "SNMP Debug logging prefix")
 
 	// parse command line flags
 	flag.Parse()
@@ -71,6 +77,10 @@ func init() {
 		log.Fatal("snmp-version 3 not supported yet")
 	default:
 		log.Fatalf("invalid snmp-version; %s", defSnmpVersion)
+	}
+
+	if viper.GetBool(varLogSnmp) {
+		Server.SNMPLogger = log.New(os.Stdout, viper.GetString(varLogSnmpPrefix), log.LstdFlags)
 	}
 
 	/*
