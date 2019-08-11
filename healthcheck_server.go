@@ -5,20 +5,20 @@ package main
 import (
 	"context"
 
-	pb "github.com/thebinary/go-snmp-grpc/protobuf"
+	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
 type HealthCheckServer struct{}
 
-func (s *HealthCheckServer) Check(ctx context.Context, request *pb.HealthCheckRequest) (response *pb.HealthCheckResponse, err error) {
-	return &pb.HealthCheckResponse{
-		Status: pb.HealthCheckResponse_SERVING,
+func (s *HealthCheckServer) Check(ctx context.Context, request *grpc_health_v1.HealthCheckRequest) (response *grpc_health_v1.HealthCheckResponse, err error) {
+	return &grpc_health_v1.HealthCheckResponse{
+		Status: grpc_health_v1.HealthCheckResponse_SERVING,
 	}, nil
 }
 
-func (s *HealthCheckServer) Watch(request *pb.HealthCheckRequest, srv pb.Health_WatchServer) (err error) {
-	err = srv.Send(&pb.HealthCheckResponse{
-		Status: pb.HealthCheckResponse_SERVING,
+func (s *HealthCheckServer) Watch(request *grpc_health_v1.HealthCheckRequest, srv grpc_health_v1.Health_WatchServer) (err error) {
+	err = srv.Send(&grpc_health_v1.HealthCheckResponse{
+		Status: grpc_health_v1.HealthCheckResponse_SERVING,
 	})
 	return err
 }
