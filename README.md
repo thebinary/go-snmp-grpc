@@ -1,5 +1,7 @@
 # go-snmp-grpc
 
+[![Travis Build](https://api.travis-ci.org/thebinary/go-snmp-grpc.svg?branch=master)](https://travis-ci.org/thebinary/go-snmp-grpc)
+
 __SNMP through GRPC__
 
 ## Use Cases
