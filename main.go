@@ -17,6 +17,7 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterCommandServer(s, &Server)
+	pb.RegisterHealthServer(s, &HealthCheckServer{})
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to server: %v", err)

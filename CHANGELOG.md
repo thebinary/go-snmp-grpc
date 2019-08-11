@@ -1,3 +1,6 @@
+## v0.0.5
+* add GRPC Health Check service
+
 ## v0.0.4
 * add optional debug SNMP logging
 
