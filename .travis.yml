@@ -9,8 +9,7 @@ os:
 dist: trusty
 sudo: false
 install: true
-script:
-  - env GO111MODULE=on go build
+
 deploy:
 - provider: script
   skip_cleanup: true
