@@ -19,7 +19,7 @@ const (
 	varDefaultSnmpVersion   = "default_version"
 	varLogSnmp              = "log_snmp"
 	varLogSnmpPrefix        = "log_snmp_prefix"
-	varMetricsEnable        = "metrics_enabled"
+	varMetricsEnable        = "metrics_enable"
 	varMetricsAddr          = "metrics_addr"
 	varMetricsPath          = "metrics_path"
 )
@@ -48,7 +48,7 @@ func init() {
 	viper.SetEnvPrefix("GSNMP")
 	envs := []string{
 		varDefaultSnmpCommunity, varDefaultSnmpVersion, varLogSnmp, varLogSnmpPrefix,
-		varMetricsAddr, varMetricsPath,
+		varMetricsEnable, varMetricsAddr, varMetricsPath,
 	}
 	for _, envName := range envs {
 		err := viper.BindEnv(envName)
