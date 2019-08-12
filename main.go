@@ -29,7 +29,9 @@ func main() {
 		grpc_prometheus.Register(s)
 		http.Handle(Server.MetricsPath, promhttp.Handler())
 
-		go log.Fatal(http.ListenAndServe(Server.MetricsAddr, nil))
+		go func() {
+			log.Fatal(http.ListenAndServe(Server.MetricsAddr, nil))
+		}()
 	}
 
 	if err := s.Serve(lis); err != nil {
