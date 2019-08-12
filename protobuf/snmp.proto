@@ -5,7 +5,7 @@
  */
 syntax = "proto3";
 
-package protobuf;
+package thebinary.snmp;
 
 /*
  * Asn1Ber Enum Type definitions
