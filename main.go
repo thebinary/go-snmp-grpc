@@ -25,6 +25,7 @@ func main() {
 	grpc_health_v1.RegisterHealthServer(s, &HealthCheckServer{})
 
 	if Server.MetricsEnabled {
+		log.Printf("Metrics listening on address=%s, path=%s", Server.MetricsAddr, Server.MetricsPath)
 		grpc_prometheus.Register(s)
 		http.Handle(Server.MetricsPath, promhttp.Handler())
 
