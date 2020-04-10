@@ -1,0 +1,77 @@
+package main
+
+import (
+	"context"
+	"flag"
+	"io"
+	"log"
+
+	pb "github.com/thebinary/go-snmp-grpc/protobuf"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/metadata"
+)
+
+func main() {
+	var serverAddr string
+	var target string
+	var community string
+	var targetPort string
+	flag.StringVar(&serverAddr, "addr", "127.0.0.1:8161", "grpc server address to connect to")
+	flag.StringVar(&target, "target", "", "snmp target")
+	flag.StringVar(&community, "community", "public", "snmp community")
+	flag.StringVar(&targetPort, "port", "161", "snmp target port")
+	flag.Parse()
+
+	conn, err := grpc.Dial(serverAddr, grpc.WithInsecure())
+	if err != nil {
+		log.Panicf("grpc dial error: %v", err)
+	}
+	defer conn.Close()
+
+	hclient := grpc_health_v1.NewHealthClient(conn)
+	d, err := hclient.Check(context.Background(), &grpc_health_v1.HealthCheckRequest{Service: "GSNMP"})
+	log.Println(d, err)
+
+	client := pb.NewCommandClient(conn)
+
+	data := metadata.New(map[string]string{
+		"snmp-target":    target,
+		"snmp-community": community,
+		"snmp-port":      targetPort,
+	})
+
+	ctx := metadata.NewOutgoingContext(context.Background(), data)
+
+	sPacket, err := client.Get(ctx, &pb.OidList{
+		Oids: []string{
+			".1.3.6.1.2.1.1.1.0",
+			".1.3.6.1.2.1.1.2.0",
+			".1.3.6.1.2.1.1.3.0",
+			".1.3.6.1.2.1.1.7.0",
+			".1.3.6.1.2.1.1.7.10",
+		},
+	})
+
+	if err != nil {
+		log.Printf("[ERR] %v", err)
+	}
+
+	log.Println(sPacket.GetVariable())
+
+	wClient, err := client.StreamWalk(ctx, &pb.Oid{Oid: ".1.3.6.1.2.1.31.1.1.1.1"})
+	if err != nil {
+		log.Println(err)
+	} else {
+		for {
+			p, err := wClient.Recv()
+			log.Println(p.GetType(), p.GetStr(), err)
+			if err == io.EOF {
+				break
+			} else if err != nil {
+				log.Printf("err: %v", err)
+				break
+			}
+		}
+	}
+}
