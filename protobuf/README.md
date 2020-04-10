@@ -4,16 +4,16 @@
 ## Table of Contents
 
 - [protobuf/snmp.proto](#protobuf/snmp.proto)
-    - [Oid](#protobuf.Oid)
-    - [OidList](#protobuf.OidList)
-    - [SnmpPDU](#protobuf.SnmpPDU)
-    - [SnmpPDUs](#protobuf.SnmpPDUs)
-    - [SnmpPacket](#protobuf.SnmpPacket)
+    - [Oid](#thebinary.snmp.Oid)
+    - [OidList](#thebinary.snmp.OidList)
+    - [SnmpPDU](#thebinary.snmp.SnmpPDU)
+    - [SnmpPDUs](#thebinary.snmp.SnmpPDUs)
+    - [SnmpPacket](#thebinary.snmp.SnmpPacket)
   
-    - [Asn1BER](#protobuf.Asn1BER)
+    - [Asn1BER](#thebinary.snmp.Asn1BER)
   
   
-    - [Command](#protobuf.Command)
+    - [Command](#thebinary.snmp.Command)
   
 
 - [Scalar Value Types](#scalar-value-types)
@@ -29,7 +29,7 @@ SNMP Protobuf.
 A protobuf interface to SNMP functions.
 
 
-<a name="protobuf.Oid"></a>
+<a name="thebinary.snmp.Oid"></a>
 
 ### Oid
 Represents SNMP OID.
@@ -44,7 +44,7 @@ Represents SNMP OID.
 
 
 
-<a name="protobuf.OidList"></a>
+<a name="thebinary.snmp.OidList"></a>
 
 ### OidList
 Represents list of SNMP Oids
@@ -59,7 +59,7 @@ Represents list of SNMP Oids
 
 
 
-<a name="protobuf.SnmpPDU"></a>
+<a name="thebinary.snmp.SnmpPDU"></a>
 
 ### SnmpPDU
 Represents a single SNMP PDU
@@ -72,7 +72,7 @@ determined by the type of value it stores.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | Name | [string](#string) |  | OID |
-| Type | [Asn1BER](#protobuf.Asn1BER) |  | PDU Type (Asn1BER encoding type) |
+| Type | [Asn1BER](#thebinary.snmp.Asn1BER) |  | PDU Type (Asn1BER encoding type) |
 | I32 | [int32](#int32) |  | Stores 32-bit integer |
 | I64 | [int64](#int64) |  | Stores 64-bit signed integer |
 | UI32 | [uint32](#uint32) |  | Stores 32-bit unsigned integer |
@@ -84,7 +84,7 @@ determined by the type of value it stores.
 
 
 
-<a name="protobuf.SnmpPDUs"></a>
+<a name="thebinary.snmp.SnmpPDUs"></a>
 
 ### SnmpPDUs
 Represents multiple SNMP PDU
@@ -92,14 +92,14 @@ Represents multiple SNMP PDU
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| pdus | [SnmpPDU](#protobuf.SnmpPDU) | repeated |  |
+| pdus | [SnmpPDU](#thebinary.snmp.SnmpPDU) | repeated |  |
 
 
 
 
 
 
-<a name="protobuf.SnmpPacket"></a>
+<a name="thebinary.snmp.SnmpPacket"></a>
 
 ### SnmpPacket
 
@@ -108,7 +108,7 @@ Represents multiple SNMP PDU
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | Error | [uint32](#uint32) |  |  |
-| Variable | [SnmpPDU](#protobuf.SnmpPDU) | repeated |  |
+| Variable | [SnmpPDU](#thebinary.snmp.SnmpPDU) | repeated |  |
 
 
 
@@ -117,7 +117,7 @@ Represents multiple SNMP PDU
  
 
 
-<a name="protobuf.Asn1BER"></a>
+<a name="thebinary.snmp.Asn1BER"></a>
 
 ### Asn1BER
 Asn1Ber Enum Type definitions
@@ -153,17 +153,17 @@ Asn1Ber Enum Type definitions
  
 
 
-<a name="protobuf.Command"></a>
+<a name="thebinary.snmp.Command"></a>
 
 ### Command
 The SNMP command service.
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| Get | [OidList](#protobuf.OidList) | [SnmpPacket](#protobuf.SnmpPacket) | SNMP Get given the list of OIDs |
-| Set | [SnmpPDUs](#protobuf.SnmpPDUs) | [SnmpPacket](#protobuf.SnmpPacket) | SNMP Set |
-| Walk | [Oid](#protobuf.Oid) | [SnmpPDUs](#protobuf.SnmpPDUs) | SNMP Walk and return all variables in one shot |
-| StreamWalk | [Oid](#protobuf.Oid) | [SnmpPDU](#protobuf.SnmpPDU) stream | Stream each SNMP PDU while running SNMP WALK from the given OID. |
+| Get | [OidList](#thebinary.snmp.OidList) | [SnmpPacket](#thebinary.snmp.SnmpPacket) | SNMP Get given the list of OIDs |
+| Set | [SnmpPDUs](#thebinary.snmp.SnmpPDUs) | [SnmpPacket](#thebinary.snmp.SnmpPacket) | SNMP Set |
+| Walk | [Oid](#thebinary.snmp.Oid) | [SnmpPDUs](#thebinary.snmp.SnmpPDUs) | SNMP Walk and return all variables in one shot |
+| StreamWalk | [Oid](#thebinary.snmp.Oid) | [SnmpPDU](#thebinary.snmp.SnmpPDU) stream | Stream each SNMP PDU while running SNMP WALK from the given OID. |
 
  
 

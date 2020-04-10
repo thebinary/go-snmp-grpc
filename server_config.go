@@ -12,10 +12,16 @@ import (
 
 const (
 	defaultAddr             = ":8161"
+	defaultMetricsEnabled   = false
+	defaultMetricsAddr      = ":9161"
+	defaultMetricsPath      = "/metrics"
 	varDefaultSnmpCommunity = "default_comm"
 	varDefaultSnmpVersion   = "default_version"
 	varLogSnmp              = "log_snmp"
 	varLogSnmpPrefix        = "log_snmp_prefix"
+	varMetricsEnable        = "metrics_enable"
+	varMetricsAddr          = "metrics_addr"
+	varMetricsPath          = "metrics_path"
 )
 
 type CommandServer struct {
@@ -23,6 +29,9 @@ type CommandServer struct {
 	DefaultVersion   gosnmp.SnmpVersion
 	DefaultCommunity string
 	SNMPLogger       gosnmp.Logger
+	MetricsEnabled   bool
+	MetricsAddr      string
+	MetricsPath      string
 }
 
 // C : Global Application Config
@@ -39,6 +48,7 @@ func init() {
 	viper.SetEnvPrefix("GSNMP")
 	envs := []string{
 		varDefaultSnmpCommunity, varDefaultSnmpVersion, varLogSnmp, varLogSnmpPrefix,
+		varMetricsEnable, varMetricsAddr, varMetricsPath,
 	}
 	for _, envName := range envs {
 		err := viper.BindEnv(envName)
@@ -53,6 +63,9 @@ func init() {
 	flag.String(varDefaultSnmpVersion, fmt.Sprint(gosnmp.Default.Version), "Default SNMP Version")
 	flag.Bool(varLogSnmp, false, "SNMP Debug logging")
 	flag.String(varLogSnmpPrefix, "[SNMP]\t", "SNMP Debug logging prefix")
+	flag.Bool(varMetricsEnable, defaultMetricsEnabled, "Enable Prometheus Metrics")
+	flag.String(varMetricsAddr, defaultMetricsAddr, "Prometheus Metrics Listening Address")
+	flag.String(varMetricsPath, defaultMetricsPath, "Prometheus Metrics Path")
 
 	// parse command line flags
 	flag.Parse()
@@ -82,6 +95,10 @@ func init() {
 	if viper.GetBool(varLogSnmp) {
 		Server.SNMPLogger = log.New(os.Stdout, viper.GetString(varLogSnmpPrefix), log.LstdFlags)
 	}
+
+	Server.MetricsEnabled = viper.GetBool(varMetricsEnable)
+	Server.MetricsAddr = viper.GetString(varMetricsAddr)
+	Server.MetricsPath = viper.GetString(varMetricsPath)
 
 	/*
 		// Print configuration
