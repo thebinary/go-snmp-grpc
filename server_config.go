@@ -8,6 +8,7 @@ import (
 	"github.com/soniah/gosnmp"
 	flag "github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"github.com/thebinary/go-snmp-grpc/server"
 )
 
 const (
@@ -24,18 +25,15 @@ const (
 	varMetricsPath          = "metrics_path"
 )
 
-type CommandServer struct {
-	ListenAddr       string
-	DefaultVersion   gosnmp.SnmpVersion
-	DefaultCommunity string
-	SNMPLogger       gosnmp.Logger
-	MetricsEnabled   bool
-	MetricsAddr      string
-	MetricsPath      string
+// Config defines the instance configuration
+type Config struct {
+	MetricsEnabled bool
+	MetricsAddr    string
+	MetricsPath    string
 }
 
-// C : Global Application Config
-var Server = CommandServer{}
+var commandSrv = server.CommandServer{}
+var config = Config{}
 
 func init() {
 	// bind ADRR env var without the prefix
@@ -77,15 +75,15 @@ func init() {
 	}
 
 	// init server with given configurations
-	Server.ListenAddr = viper.GetString("addr")
-	Server.DefaultCommunity = viper.GetString(varDefaultSnmpCommunity)
+	commandSrv.ListenAddr = viper.GetString("addr")
+	commandSrv.DefaultCommunity = viper.GetString(varDefaultSnmpCommunity)
 	defSnmpVersion := viper.GetString(varDefaultSnmpVersion)
 
 	switch defSnmpVersion {
 	case "1":
-		Server.DefaultVersion = gosnmp.Version1
+		commandSrv.DefaultVersion = gosnmp.Version1
 	case "2", "2c":
-		Server.DefaultVersion = gosnmp.Version2c
+		commandSrv.DefaultVersion = gosnmp.Version2c
 	case "3":
 		log.Fatal("snmp-version 3 not supported yet")
 	default:
@@ -93,20 +91,20 @@ func init() {
 	}
 
 	if viper.GetBool(varLogSnmp) {
-		Server.SNMPLogger = log.New(os.Stdout, viper.GetString(varLogSnmpPrefix), log.LstdFlags)
+		commandSrv.SNMPLogger = log.New(os.Stdout, viper.GetString(varLogSnmpPrefix), log.LstdFlags)
 	}
 
-	Server.MetricsEnabled = viper.GetBool(varMetricsEnable)
-	Server.MetricsAddr = viper.GetString(varMetricsAddr)
-	Server.MetricsPath = viper.GetString(varMetricsPath)
+	config.MetricsEnabled = viper.GetBool(varMetricsEnable)
+	config.MetricsAddr = viper.GetString(varMetricsAddr)
+	config.MetricsPath = viper.GetString(varMetricsPath)
 
 	/*
 		// Print configuration
 		fmt.Println("============================================================")
 		fmt.Println("CONFIG")
-		fmt.Println("Listening Address =", Server.ListenAddr)
-		fmt.Println("Default Version =", Server.DefaultVersion)
-		fmt.Println("Default Community =", Server.DefaultCommunity)
+		fmt.Println("Listening Address =", commandSrv.ListenAddr)
+		fmt.Println("Default Version =", commandSrv.DefaultVersion)
+		fmt.Println("Default Community =", commandSrv.DefaultCommunity)
 		fmt.Println("============================================================")
 		fmt.Println()
 	*/

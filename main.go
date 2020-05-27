@@ -14,23 +14,23 @@ import (
 )
 
 func main() {
-	lis, err := net.Listen("tcp", Server.ListenAddr)
+	lis, err := net.Listen("tcp", commandSrv.ListenAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	log.Println("Listening on ", Server.ListenAddr)
+	log.Println("Listening on ", commandSrv.ListenAddr)
 
 	s := grpc.NewServer()
-	pb.RegisterCommandServer(s, &Server)
+	pb.RegisterCommandServer(s, &commandSrv)
 	grpc_health_v1.RegisterHealthServer(s, &HealthCheckServer{})
 
-	if Server.MetricsEnabled {
-		log.Printf("Metrics listening on address=%s, path=%s", Server.MetricsAddr, Server.MetricsPath)
+	if config.MetricsEnabled {
+		log.Printf("Metrics listening on address=%s, path=%s", config.MetricsAddr, config.MetricsPath)
 		grpc_prometheus.Register(s)
-		http.Handle(Server.MetricsPath, promhttp.Handler())
+		http.Handle(config.MetricsPath, promhttp.Handler())
 
 		go func() {
-			log.Fatal(http.ListenAndServe(Server.MetricsAddr, nil))
+			log.Fatal(http.ListenAndServe(config.MetricsAddr, nil))
 		}()
 	}
 
