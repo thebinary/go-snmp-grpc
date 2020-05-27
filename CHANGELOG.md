@@ -1,4 +1,5 @@
 ## v0.0.6
+* fix: TimeTicks use as i32 instead of i64
 * fix: prometheus http deadlocking grpc
 * refactor: segregate server implementation package
 * upgrade: dependencies
