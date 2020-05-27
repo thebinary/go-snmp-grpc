@@ -71,13 +71,35 @@ func ToPbSnmpPDU(pdu gosnmp.SnmpPDU) (pbSnmpPdu *pb.SnmpPDU) {
 		pbSnmpPdu.Value = &pb.SnmpPDU_Str{
 			Str: string(pdu.Value.([]byte)),
 		}
+	case gosnmp.Gauge32:
+		fallthrough
+	case gosnmp.Counter32:
+		fallthrough
 	case gosnmp.TimeTicks:
+		var val uint32
+		var ok bool
+		if val, ok = pdu.Value.(uint32); !ok {
+			val = uint32(pdu.Value.(uint))
+		}
 		pbSnmpPdu.Value = &pb.SnmpPDU_UI32{
-			UI32: pdu.Value.(uint32),
+			UI32: val,
+		}
+	case gosnmp.Counter64:
+		var val uint64
+		var ok bool
+		if val, ok = pdu.Value.(uint64); !ok {
+			val = uint64(pdu.Value.(uint))
+		}
+		pbSnmpPdu.Value = &pb.SnmpPDU_UI64{
+			UI64: val,
 		}
 	case gosnmp.Integer:
 		pbSnmpPdu.Value = &pb.SnmpPDU_I32{
 			I32: int32(pdu.Value.(int)),
+		}
+	case gosnmp.ObjectIdentifier:
+		pbSnmpPdu.Value = &pb.SnmpPDU_Str{
+			Str: pdu.Value.(string),
 		}
 	}
 
