@@ -1,6 +1,7 @@
 ## v0.0.6
 * fix: prometheus http deadlocking grpc
 * refactor: segregate server implementation package
+* upgrade: dependencies
 
 ## v0.0.5
 * add GRPC Health Check service
