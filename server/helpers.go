@@ -72,8 +72,8 @@ func ToPbSnmpPDU(pdu gosnmp.SnmpPDU) (pbSnmpPdu *pb.SnmpPDU) {
 			Str: string(pdu.Value.([]byte)),
 		}
 	case gosnmp.TimeTicks:
-		pbSnmpPdu.Value = &pb.SnmpPDU_UI64{
-			UI64: uint64(pdu.Value.(uint)),
+		pbSnmpPdu.Value = &pb.SnmpPDU_UI32{
+			UI32: pdu.Value.(uint32),
 		}
 	case gosnmp.Integer:
 		pbSnmpPdu.Value = &pb.SnmpPDU_I32{
