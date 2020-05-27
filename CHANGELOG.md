@@ -1,6 +1,9 @@
+## v0.0.7
+* fix: TimeTicks difference in darwin and linux
+* add support for snmp types: ObjectIdentifier, Gauge32, Counter32, Counter64
+
 ## v0.0.6
 * fix: TimeTicks use as i32 instead of i64
-* fix: prometheus http deadlocking grpc
 * refactor: segregate server implementation package
 * upgrade: dependencies
 
