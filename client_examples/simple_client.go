@@ -45,10 +45,21 @@ func main() {
 
 	sPacket, err := client.Get(ctx, &pb.OidList{
 		Oids: []string{
+			// OctetString: SNMPv2-MIB::sysDescr.0
 			".1.3.6.1.2.1.1.1.0",
+			// ObjectIdentifier: SNMPv2-MIB::sysObjectID.0
 			".1.3.6.1.2.1.1.2.0",
+			// TimeTicks: DISMAN-EVENT-MIB::sysUpTimeInstance
 			".1.3.6.1.2.1.1.3.0",
+			// Integer: SNMPv2-MIB::sysServices.0
 			".1.3.6.1.2.1.1.7.0",
+			// Gauge32: IF-MIB::ifSpeed.1
+			".1.3.6.1.2.1.2.2.1.5.1",
+			// Counter32: IP-MIB::ipSystemStatsInReceives.ipv4
+			".1.3.6.1.2.1.4.31.1.1.3.1",
+			// Counter64: IP-MIB::ipSystemStatsHCInReceives.ipv4
+			".1.3.6.1.2.1.4.31.1.1.4.1",
+			//NoSuchInstance
 			".1.3.6.1.2.1.1.7.10",
 		},
 	})
