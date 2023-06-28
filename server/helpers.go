@@ -119,7 +119,7 @@ func ToGoSnmpPDU(pbSnmpPdu *pb.SnmpPDU) (pdu gosnmp.SnmpPDU) {
 	case pb.Asn1BER_TimeTicks:
 		pdu.Value = pbSnmpPdu.GetUI64()
 	case pb.Asn1BER_Integer:
-		pdu.Value = pbSnmpPdu.GetI32()
+		pdu.Value = int(pbSnmpPdu.GetI32())
 	}
 
 	return pdu
