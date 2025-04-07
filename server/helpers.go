@@ -68,8 +68,8 @@ func ToPbSnmpPDU(pdu gosnmp.SnmpPDU) (pbSnmpPdu *pb.SnmpPDU) {
 
 	switch pdu.Type {
 	case gosnmp.OctetString:
-		pbSnmpPdu.Value = &pb.SnmpPDU_Str{
-			Str: string(pdu.Value.([]byte)),
+		pbSnmpPdu.Value = &pb.SnmpPDU_Bytes{
+			Bytes: pdu.Value.([]byte),
 		}
 	case gosnmp.Gauge32:
 		fallthrough
