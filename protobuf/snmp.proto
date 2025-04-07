@@ -66,6 +66,7 @@ message SnmpPDU {
     uint32 UI32 = 5; // Stores 32-bit unsigned integer
     uint64 UI64 = 6; // Stores 64-bit unsigned integer
     string Str = 7; // Stores string
+    bytes Bytes = 8; // Stores byte array
   }
 }
 
